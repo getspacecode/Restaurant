@@ -20,6 +20,7 @@ import {
   Textarea,
 } from "@/components/ui";
 import { reservations } from "@/data/reservations";
+import { refresh } from "@/lib/api";
 import { queryKeys } from "@/lib/queryKeys";
 import { fmtDate } from "@/lib/utils";
 import { DiningTable, Reservation, ReservationStatus } from "@/types";
@@ -69,6 +70,7 @@ function EditForm({
   closeModal: () => void;
 }) {
   const [form, setForm] = useState<Reservation>(r);
+  const [removedTables, setRemovedTables] = useState<DiningTable[]>([]);
   const [openedTables, setOpenedTables] = useState(false);
   const set = <K extends keyof Reservation>(key: K, value: Reservation[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -96,6 +98,7 @@ function EditForm({
     mutationFn: ({ id, input }: { id: number; input: Reservation }) =>
       reservationService.change(id, input),
     mutationKey: queryKeys.reservations,
+    onSuccess: () => refresh(queryKeys.reservations),
   });
 
   function submit(e: React.FormEvent, id: number) {
@@ -242,6 +245,17 @@ function EditForm({
                     ...prev,
                     tables: prev.tables?.filter((table) => table.id !== t.id),
                   }));
+                  setRemovedTables((prev) => {
+                    const existsInAvailableTables = tables?.some(
+                      (table) => table.id === t.id,
+                    );
+
+                    if (existsInAvailableTables) return prev;
+
+                    return prev.some((table) => table.id === t.id)
+                      ? prev
+                      : [...prev, t];
+                  });
                 }}
               >
                 <Pill
@@ -261,24 +275,25 @@ function EditForm({
         </div>
         <Section title="Available tables (click to select)">
           <div className="flex flex-wrap items-center gap-2">
-            {tables
-              ?.filter(
+            {[...(tables ?? []), ...removedTables]
+              .filter(
                 (t) => !form.tables?.some((selected) => selected.id === t.id),
               )
               .map((t) => (
                 <button
                   type="button"
                   key={t.id}
-                  disabled={r.tables?.some((table) => table.id === t.id)}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setForm({
-                      ...form,
-                      tables: [...(form.tables ?? []), t],
-                    });
+                  onClick={() => {
+                    setForm((prev) => ({
+                      ...prev,
+                      tables: [...(prev.tables ?? []), t],
+                    }));
+                    setRemovedTables((prev) =>
+                      prev.filter((table) => table.id !== t.id),
+                    );
                   }}
                 >
-                  <Pill className="hover:bg-primary" kind="dine" key={t.id}>
+                  <Pill className="hover:bg-primary" kind="dine">
                     Table {t.label} with {t.seats} seats
                   </Pill>
                 </button>

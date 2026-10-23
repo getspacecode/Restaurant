@@ -5,9 +5,8 @@ import com.spacecode.server.entities.Category;
 import com.spacecode.server.entities.Food;
 import com.spacecode.server.repositories.CategoryRepository;
 import com.spacecode.server.repositories.FoodRepository;
-import java.util.Base64;
+import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -42,26 +41,10 @@ public class FoodService {
     food.setAvailable(input.available());
 
     if (input.image() != null && !input.image().isBlank()) {
-      food.setImageKey(uploadImage(input.image()));
+      food.setImageKey(storageService.uploadImage(input.image(), "foods"));
     }
 
     return foodRepository.save(food);
-  }
-
-  // dataUrl looks like "data:image/png;base64,iVBORw0..."
-  private String uploadImage(String dataUrl) {
-    String contentType = dataUrl.substring("data:".length(), dataUrl.indexOf(';'));
-    byte[] bytes = Base64.getDecoder().decode(dataUrl.substring(dataUrl.indexOf(',') + 1));
-
-    // "image/png" -> ".png", "image/svg+xml" -> ".svg"
-    String extension = contentType.substring(contentType.indexOf('/') + 1);
-    if (extension.contains("+")) {
-      extension = extension.substring(0, extension.indexOf('+'));
-    }
-
-    String imageKey = "foods/" + UUID.randomUUID() + "." + extension;
-    storageService.upload(bytes, contentType, imageKey);
-    return imageKey;
   }
 
   public List<Food> all() {
@@ -72,8 +55,13 @@ public class FoodService {
     return foodRepository.findByAvailableTrue();
   }
 
+  @Transactional
   public void delete(int id) {
-    foodRepository.deleteById(id);
+    Food food =
+        foodRepository.findById(id).orElseThrow(() -> new RuntimeException("Food not found"));
+    String imageKey = food.getImageKey();
+    storageService.delete(imageKey);
+    foodRepository.delete(food);
   }
 
   public void changeAvailable(int id, boolean available) {

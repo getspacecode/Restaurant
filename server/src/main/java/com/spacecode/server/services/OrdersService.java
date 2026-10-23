@@ -21,6 +21,7 @@ public class OrdersService {
   private final OrdersRepository ordersRep;
   private final DiningTableRepository tableRep;
   private final FoodRepository foodRep;
+  private final StorageService storageService;
 
   @Transactional(readOnly = true)
   public List<OrderResponse> getAll() {
@@ -63,7 +64,9 @@ public class OrdersService {
 
     // no table id (or an unknown one, like 0) means the order has no table
     DiningTable table =
-        input.tableId() == null ? null : tableRep.findById(input.tableId().longValue()).orElse(null);
+        input.tableId() == null
+            ? null
+            : tableRep.findById(input.tableId().longValue()).orElse(null);
 
     order.setTable(table);
     order.setAddress(input.address());
@@ -126,6 +129,10 @@ public class OrdersService {
       order.setStatus(OrderStatus.CANCELLED);
       ordersRep.save(order);
     }
+  }
+
+  public String getImage(Food food) {
+    return storageService.getImage(food.getImageKey());
   }
 
   private Orders find(Long id) {

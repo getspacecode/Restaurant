@@ -111,6 +111,12 @@ const PILLS = {
   admin: "bg-gold-soft text-gold-text",
   gold: "bg-gold-soft text-gold-text",
   tag: "bg-bg/90 text-cream backdrop-blur",
+  owner: "bg-[#3d1e19] text-[#f08a78]",
+  manager: "bg-[#2a2147] text-[#b9a0f0]",
+  chef: "bg-[#163828] text-[#7fd0a0]",
+  waiter: "bg-[#1b2c52] text-[#8fb0ff]",
+  cashier: "bg-[#3a2c10] text-[#f0b95a]",
+  cook: "bg-[#243029] text-[#93a39b]",
 } as const;
 export type PillKind = keyof typeof PILLS;
 export function Pill({

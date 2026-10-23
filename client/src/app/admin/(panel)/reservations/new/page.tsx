@@ -10,7 +10,6 @@ import { queryKeys } from "@/lib/queryKeys";
 import { Reservation } from "@/types";
 import { reservationService } from "@/api/reservation";
 
-// Change these to match your theme
 const ACCENT_BG = "bg-amber-600 text-white";
 const ACCENT_BORDER = "border-amber-600";
 const ACCENT_SOFT = "bg-amber-50 dark:bg-amber-950/30";
@@ -59,6 +58,9 @@ export default function NewReservationPage() {
       form.startTime,
       form.endTime,
     ],
+    enabled: Boolean(
+      form.startDate && form.endDate && form.startTime && form.endTime,
+    ),
   });
   const saveReservation = useMutation({
     mutationFn: (input: Reservation) => reservationService.save(input),
@@ -114,7 +116,7 @@ export default function NewReservationPage() {
       const input = {
         ...form,
         guests: Number(form.guests),
-        eventType: form.event.toUpperCase(),
+        event: form.event.toUpperCase(),
         status: form.status.toUpperCase(),
         tableIds: selectedTables,
       };
@@ -122,7 +124,7 @@ export default function NewReservationPage() {
         onError: (err) => console.log(err),
         onSuccess: () => {
           toast("Reservation saved");
-          // router.push("/admin/reservations");
+          router.push("/admin/reservations");
         },
       });
       return;

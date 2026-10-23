@@ -57,8 +57,8 @@ export type NewOrder = {
 
 export type TableShape = "round" | "rect";
 export type DiningTable = {
-  id: number | null; // null = not saved yet
-  clientId?: string; // only used in the browser, never sent to the server
+  id: number | null;
+  clientId?: string;
   label: string;
   shape: TableShape;
   seats: number;
@@ -68,13 +68,13 @@ export type DiningTable = {
   active: boolean;
 };
 
-/* ---------------- placeholders (no backend yet) ---------------- */
-
+export type GalleryCategory =
+  "Food" | "Kitchen" | "Catering" | "Events" | "Team" | "Restaurant" | "Other";
 export type GalleryImage = {
-  id: string;
-  image: string;
+  id?: string;
+  image: string | null;
   caption: string;
-  category: string;
+  category: GalleryCategory | string;
 };
 
 export type ReservationStatus =
@@ -104,13 +104,15 @@ export type Customer = {
   ordersCount: number;
   lastOrderAt: number;
 };
+export type StaffRole =
+  "Owner" | "Manager" | "Chef" | "Waiter" | "Cashier" | "Cook";
 export type Staff = {
   id: string;
   name: string;
   username: string;
-  role: "admin" | "staff";
-  active: boolean;
-  lastLogin: number;
+  password?: string;
+  role: StaffRole;
+  createdAt: string;
 };
 
 export type Settings = {

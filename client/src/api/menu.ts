@@ -17,7 +17,7 @@ const FOOD_FIELDS = `
   category { id name }
 `;
 
-const toDataUrl = (file: File) =>
+export const toDataUrl = (file: File) =>
   new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result as string);

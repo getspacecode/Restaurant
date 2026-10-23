@@ -26,7 +26,6 @@ public class FoodController {
     return foodService.getAvailable();
   }
 
-  // The image is only loaded from storage when a query asks for the `image` field.
   @SchemaMapping(typeName = "Food", field = "image")
   public String image(Food food) {
     return foodService.getImage(food);

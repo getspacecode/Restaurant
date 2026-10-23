@@ -32,6 +32,23 @@ enum ReservationStatus {
   CANCELLED
 }
 
+enum GalleryCategory {
+  FOOD
+  CATERING
+  RESTAURANT
+  KITCHEN
+  EVENTS
+  TEAM
+  OTHER
+}
+enum StaffRole {
+  OWNER
+  MANAGER 
+  CHEF
+  WAITER
+  CASHIER
+  COOK
+}
 # ---------------------------------- types ----------------------------------
 
 type Category {
@@ -100,6 +117,19 @@ type Reservation {
   email: String
   guests: Int!
 }
+type Gallery {
+  id: Int!
+  caption: String!
+  image: String!
+  category: GalleryCategory!
+}
+type Staff {
+  id: String!
+  name: String!
+  username: String!
+  role: StaffRole!
+  createdAt: String!
+}
 
 # ---------------------------------- inputs ---------------------------------
 
@@ -114,7 +144,11 @@ input FoodInput {
   image: String
   available: Boolean!
 }
-
+input GalleryInput {
+  caption: String!
+  image: String!
+  category: GalleryCategory!
+}
 
 input OrderItemInput {
   foodId: Int!
@@ -182,7 +216,18 @@ input TimeRangeInput {
   endDate: String!
   endTime: String!
 }
+input StaffInput {
+  name: String!
+  username: String!
+  password: String!
+  role: StaffRole!
+}
 
+input StaffChangeInput {
+  name: String!
+  username: String!
+  role: StaffRole!
+}
 # --------------------------------- operations ------------------------------
 
 type Query {
@@ -193,6 +238,8 @@ type Query {
   tables: [DiningTable!]!
   activeTables(range: TimeRangeInput): [DiningTable!]!
   reservations: [Reservation!]!
+  galleries: [Gallery!]!
+  staffs: [Staff!]!
 }
 type Mutation {
   saveCategory(name: String!): Category!
@@ -213,4 +260,11 @@ type Mutation {
 
   createReservation(input: ReservationInput!): Boolean!
   changeReservation(id: Int!, input: ReservationInput!): Boolean!
+
+  createGallery(input: GalleryInput!): Boolean!
+  deleteGallery(id: Int!): Boolean!
+
+  createStaff(input: StaffInput!): Boolean!
+  changeStaff(input: StaffChangeInput!, id: String!): Boolean!
+  deleteStaff(id: String!): Boolean!
 }

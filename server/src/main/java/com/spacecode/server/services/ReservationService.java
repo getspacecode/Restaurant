@@ -7,7 +7,9 @@ import com.spacecode.server.repositories.DiningTableRepository;
 import com.spacecode.server.repositories.ReservationRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -65,6 +67,7 @@ public class ReservationService {
     reservation.setEvent(input.event());
     reservation.setStatus(input.status());
     reservation.setNotes(input.notes());
+
     if (input.tables() != null) {
       List<DiningTable> tables =
           input.tables().stream()
@@ -74,7 +77,7 @@ public class ReservationService {
                           .findById(table.getId())
                           .orElseThrow(
                               () -> new RuntimeException("Table not found: " + table.getId())))
-              .toList();
+              .collect(Collectors.toCollection(ArrayList::new));
 
       reservation.setTables(tables);
     }

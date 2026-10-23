@@ -1,5 +1,6 @@
 package com.spacecode.server.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,7 +27,7 @@ public class OrderItem {
   @JoinColumn(name = "order_id")
   private Orders order;
 
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "food_id")
   private Food food;
 

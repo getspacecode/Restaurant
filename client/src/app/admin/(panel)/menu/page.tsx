@@ -55,7 +55,7 @@ export default function MenuAdminPage() {
     queryKey: queryKeys.categories,
     queryFn: categoryService.getAll,
   });
-
+  console.log(foodError);
   const list = foods?.filter(
     (f) =>
       (cat === "all" || f.category.name === cat) &&
@@ -254,7 +254,7 @@ export default function MenuAdminPage() {
         side
       >
         <div className="space-y-4">
-          <div className="aspect-[16/8] overflow-hidden rounded-[14px]">
+          <div className="aspect-16/8 overflow-hidden rounded-[14px]">
             <Photo
               src={
                 form.image
