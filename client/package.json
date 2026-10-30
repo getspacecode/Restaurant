@@ -10,8 +10,10 @@
   "dependencies": {
     "@fontsource-variable/inter": "^5.1.0",
     "@fontsource/playfair-display": "^5.1.0",
+    "@neondatabase/auth": "0.7.0-beta",
     "@tanstack/react-query": "^5.62.0",
     "clsx": "^2.1.1",
+    "dotenv": "^18.0.8",
     "lucide-react": "^0.469.0",
     "next": "^15.5.0",
     "react": "^19.0.0",
